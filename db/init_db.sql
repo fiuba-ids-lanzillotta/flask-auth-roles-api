@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 --  Para crear el primer usuario admin, hace un POST al endpoint
 --  de registro indicando el rol "admin":
 --
---    POST /flask_auth_roles_api/register
+--    POST /flask_auth_roles_example_api/register
 --    {
 --      "email":    "admin@admin.com",
 --      "nombre":   "Admin",

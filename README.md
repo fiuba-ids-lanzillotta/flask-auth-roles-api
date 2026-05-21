@@ -8,7 +8,7 @@ Este proyecto es un **ejemplo practico** de como construir una pequena **API RES
 
 El objetivo es servir de referencia para cualquier proyecto que necesite estructurar un backend Python con separacion clara entre **routes / services / validators / db**, hashing de passwords con **bcrypt** y autenticacion stateless con **JWT**, todo manteniendo un estilo **funcional** (sin clases, DTOs como `dict`).
 
-Este es el backend del ejemplo integrador; el frontend que lo consume vive en el repositorio `flask-auth-roles-web`.
+Este es el backend del ejemplo integrador; el frontend que lo consume vive en el repositorio `flask-auth-roles-example-web`.
 
 ## Arquitectura
 
@@ -29,7 +29,7 @@ Flujo de una request autenticada:
 ## Estructura del proyecto
 
 ```
-flask-auth-roles-api/
+flask-auth-roles-example-api/
 ├── app.py                          # Entry point Flask (puerto 5000)
 ├── docker-compose.yml              # MySQL 8 + volumen + script de inicializacion
 ├── requirements.txt                # Dependencias Python
@@ -165,14 +165,14 @@ chmod +x setup_pipenv.sh
 ./setup_pipenv.sh
 ```
 
-Una vez iniciada, la API estara disponible en `http://localhost:5000/flask_auth_roles_api`.
+Una vez iniciada, la API estara disponible en `http://localhost:5000/flask_auth_roles_example_api`.
 
 ### 4. Crear el primer usuario admin
 
 La tabla `usuarios` arranca vacia (no incluimos seed para evitar passwords hardcodeados). Para crear el primer admin, hace un `POST` al endpoint de registro indicando `rol: admin`:
 
 ```bash
-curl -X POST http://localhost:5000/flask_auth_roles_api/register \
+curl -X POST http://localhost:5000/flask_auth_roles_example_api/register \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@admin.com","nombre":"Admin","password":"admin123","rol":"admin"}'
 ```
@@ -181,7 +181,7 @@ curl -X POST http://localhost:5000/flask_auth_roles_api/register \
 
 ## Endpoints
 
-Todos los endpoints estan bajo el prefijo `/flask_auth_roles_api`. Las respuestas son JSON; los errores siguen el formato:
+Todos los endpoints estan bajo el prefijo `/flask_auth_roles_example_api`. Las respuestas son JSON; los errores siguen el formato:
 
 ```json
 {
@@ -227,7 +227,7 @@ Crea un nuevo usuario.
 | `rol`      | string | no        | `"admin"` o `"usuario"`. Default: `"usuario"`       |
 
 ```bash
-curl -X POST http://localhost:5000/flask_auth_roles_api/register \
+curl -X POST http://localhost:5000/flask_auth_roles_example_api/register \
   -H "Content-Type: application/json" \
   -d '{"email":"jperez@mail.com","nombre":"Juan Perez","password":"secret123"}'
 ```
@@ -250,7 +250,7 @@ Valida las credenciales y devuelve un JWT.
 **Body**: `{ "email": "...", "password": "..." }`
 
 ```bash
-curl -X POST http://localhost:5000/flask_auth_roles_api/login \
+curl -X POST http://localhost:5000/flask_auth_roles_example_api/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@admin.com","password":"admin123"}'
 ```
@@ -274,7 +274,7 @@ Posibles errores:
 Retorna el usuario asociado al token enviado.
 
 ```bash
-curl http://localhost:5000/flask_auth_roles_api/me \
+curl http://localhost:5000/flask_auth_roles_example_api/me \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -291,7 +291,7 @@ Posibles errores: `401` (token faltante / invalido / expirado), `404` (usuario e
 Lista todos los usuarios.
 
 ```bash
-curl http://localhost:5000/flask_auth_roles_api/usuarios \
+curl http://localhost:5000/flask_auth_roles_example_api/usuarios \
   -H "Authorization: Bearer <token>"
 ```
 

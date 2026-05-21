@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # URL base de la API
-BASE_URL = '/flask_auth_roles_api'
+BASE_URL = '/flask_auth_roles_example_api'
 
 # Roles permitidos en el sistema
 ROL_ADMIN   = 'admin'
