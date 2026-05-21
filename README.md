@@ -353,3 +353,43 @@ Ver `flask_auth_roles_example/db.py` para todos los ejemplos.
   4. inyecta el payload en `request.usuario_actual` para que la vista lo use.
 
 Toda la auth es **stateless**: la API no guarda sesiones; cada request se valida con el JWT.
+
+## Glosario de terminos
+
+- **API REST**: estilo de arquitectura para servicios web que expone recursos via HTTP (GET, POST, PUT, DELETE) usando, en general, JSON como formato de intercambio.
+- **Endpoint**: ruta concreta de la API (por ejemplo `POST /login`) que responde a un metodo HTTP y realiza una accion sobre un recurso.
+- **Request / Response**: par de mensajes HTTP. La **request** es lo que envia el cliente (metodo, headers, body); la **response** es lo que devuelve el servidor (status code, headers, body).
+- **Status code**: codigo numerico de la respuesta HTTP. Por ejemplo: `200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`, `409 Conflict`.
+- **Header `Authorization`**: encabezado HTTP donde se envia el token de autenticacion, con el formato `Bearer <token>`.
+- **Body**: contenido (payload) de una request o response. En esta API es JSON.
+- **JSON**: formato de texto para representar datos estructurados (objetos y arrays). Es el formato usado para los bodies de request y response.
+- **Flask**: micro framework web de Python usado para implementar la API.
+- **Blueprint (Flask)**: mecanismo de Flask para agrupar rutas relacionadas en modulos (por ejemplo `routes/auth.py`, `routes/usuarios.py`).
+- **Decorador (`@requiere_auth`)**: funcion de Python que envuelve a otra para agregarle comportamiento. Aca se usa para exigir un token valido (y opcionalmente un rol) antes de ejecutar la vista.
+- **Autenticacion**: proceso de verificar **quien** es el usuario (login con email y password).
+- **Autorizacion**: proceso de verificar **que** puede hacer el usuario autenticado (por ejemplo, si su rol es `admin`).
+- **Rol**: etiqueta asociada al usuario que define sus permisos. En este proyecto: `admin` y `usuario`.
+- **JWT (JSON Web Token)**: token firmado que contiene informacion del usuario (`sub`, `rol`, `exp`). El servidor lo emite en el login y el cliente lo envia en cada request protegida.
+- **Claim**: cada uno de los campos dentro del payload de un JWT (`sub` = subject/id del usuario, `exp` = expiracion, etc.).
+- **Stateless**: la API **no** guarda sesiones en memoria ni en base; cada request se autentica de cero validando el JWT.
+- **`JWT_SECRET`**: clave secreta con la que se firman y verifican los tokens. Si se filtra, cualquiera puede emitir tokens validos.
+- **Hashing**: transformacion **unidireccional** de un valor (por ejemplo una password) en una cadena de longitud fija. No se puede revertir.
+- **bcrypt**: algoritmo de hashing pensado para passwords. Incluye un **salt** aleatorio y un factor de costo configurable.
+- **Salt**: valor aleatorio que se mezcla con la password antes de hashearla para que dos passwords iguales generen hashes distintos.
+- **Bootstrapping**: pasos iniciales para dejar el sistema usable (en este caso, crear el primer usuario `admin`).
+- **Seed**: datos iniciales precargados en la base. En este proyecto **no** se hace seed para evitar passwords hardcodeadas.
+- **SQLAlchemy**: libreria de Python para hablar con bases SQL. Aca se usa **sin ORM**, ejecutando SQL literal con `text()`.
+- **ORM (Object Relational Mapper)**: capa que mapea tablas a clases/objetos. Este proyecto **no** lo usa para mantener el SQL explicito.
+- **Query parametrizada**: query SQL en la que los valores se pasan como parametros (`:email`) y no concatenados al string, evitando **SQL injection**.
+- **SQL injection**: vulnerabilidad por la que un atacante inyecta SQL malicioso a traves de inputs no sanitizados.
+- **Migracion / esquema**: definicion de la estructura de la base (tablas, columnas). Aca vive en `db/init_db.sql`.
+- **Docker / Docker Compose**: herramientas para correr servicios (en este caso MySQL) en contenedores aislados, definidos en `docker-compose.yml`.
+- **Contenedor**: instancia en ejecucion de una imagen Docker (por ejemplo el contenedor de MySQL).
+- **Volumen (Docker)**: almacenamiento persistente del contenedor; permite hacer `down` sin perder los datos.
+- **`.env` / variables de entorno**: archivo con configuracion sensible (credenciales, secretos) que **no** se commitea al repo. `.env.example` es la plantilla.
+- **Entorno virtual (`venv` / `pipenv`)**: directorio aislado con la version de Python y las dependencias del proyecto, para no mezclarlas con las del sistema.
+- **CORS (Cross-Origin Resource Sharing)**: mecanismo del navegador que controla que dominios pueden consumir la API. Relevante cuando el frontend corre en otro origen.
+- **Validator**: funcion que verifica que el body de la request cumple las reglas (campos requeridos, formato, longitudes). Viven en `validators/`.
+- **Service**: capa con la **logica de negocio** (registro, login, listar usuarios). Vive en `services/` y es invocada desde las routes.
+- **DTO (Data Transfer Object)**: estructura usada para pasar datos entre capas. En este proyecto se modelan como `dict` de Python (estilo funcional, sin clases).
+
