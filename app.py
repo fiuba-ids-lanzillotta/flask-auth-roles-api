@@ -1,9 +1,9 @@
 import logging
 from flask import Flask
 from flask_cors import CORS
-from flask_auth_roles.constants import BASE_URL
-from flask_auth_roles.routes.auth import auth_bp
-from flask_auth_roles.routes.usuarios import usuarios_bp
+from flask_auth_roles_example.constants import BASE_URL
+from flask_auth_roles_example.routes.auth import auth_bp
+from flask_auth_roles_example.routes.usuarios import usuarios_bp
 
 logging.basicConfig(level=logging.DEBUG, format='%(levelname)s - %(name)s - %(message)s')
 

@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8
-    container_name: flask_auth_roles_mysql
+    container_name: flask_auth_roles_example_mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}

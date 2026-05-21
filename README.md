@@ -34,7 +34,7 @@ flask-auth-roles-example-api/
 ├── docker-compose.yml              # MySQL 8 + volumen + script de inicializacion
 ├── requirements.txt                # Dependencias Python
 ├── .env.example                    # Template para configurar DB y JWT
-├── flask_auth_roles/
+├── flask_auth_roles_example/
 │   ├── constants.py                # Configuracion (DB, JWT, roles, codigos de error)
 │   ├── db.py                       # Capa de acceso a datos (queries literales)
 │   ├── utils.py                    # Validaciones, hashing bcrypt, JWT, @requiere_auth
@@ -336,7 +336,7 @@ with motor.begin() as conexion:
     resultado = conexion.execute(text(sql), parametros)
 ```
 
-Ver `flask_auth_roles/db.py` para todos los ejemplos.
+Ver `flask_auth_roles_example/db.py` para todos los ejemplos.
 
 ## Patron de autenticacion
 
