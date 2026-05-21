@@ -46,9 +46,21 @@ flask-auth-roles-example-api/
 │   │   └── usuarios.py             # Logica de usuarios
 │   └── validators/
 │       └── auth.py                 # Validacion de bodies de login y registro
-└── db/
-    └── init_db.sql                 # Esquema (tabla usuarios)
+├── db/
+│   └── init_db.sql                 # Esquema (tabla usuarios)
+└── docs/
+    └── swagger.yaml                # Documentacion OpenAPI 3.0 de la API
 ```
+
+## Documentacion (Swagger / OpenAPI)
+
+La especificacion completa de la API en formato OpenAPI 3.0 vive en
+[`docs/swagger.yaml`](docs/swagger.yaml). Incluye el esquema `BearerAuth` para los
+endpoints protegidos por JWT. Se puede visualizar de varias formas:
+
+- Pegando el contenido del archivo en [editor.swagger.io](https://editor.swagger.io).
+- Abriendolo con la extension "Swagger Viewer" (o similar) en VSCode.
+- Sirviendolo con cualquier renderer compatible con OpenAPI 3.
 
 ## Requisitos previos
 

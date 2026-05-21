@@ -1,0 +1,323 @@
+openapi: 3.0.0
+info:
+  title: Flask Auth Roles Example - API
+  description: |-
+    API REST de ejemplo con autenticacion via JWT y control de acceso basado en roles
+    (`admin` / `usuario`). Los passwords se hashean con bcrypt y los endpoints
+    protegidos validan el token enviado en el header `Authorization: Bearer <token>`.
+
+    Todos los endpoints cuelgan del prefijo `/flask_auth_roles_api`.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/flask_auth_roles_api
+paths:
+  /register:
+    post:
+      summary: "Registrar un usuario nuevo"
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroBody'
+      responses:
+        '201':
+          description: "Usuario creado"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /login:
+    post:
+      summary: "Iniciar sesion y obtener un JWT"
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginBody'
+      responses:
+        '200':
+          description: "Login exitoso"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /me:
+    get:
+      summary: "Datos del usuario autenticado"
+      tags:
+        - Usuarios
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: "Usuario asociado al token enviado"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /usuarios:
+    get:
+      summary: "Listar todos los usuarios (solo admin)"
+      tags:
+        - Usuarios
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: "Listado de usuarios"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Usuario'
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /usuarios/{id}:
+    parameters:
+      - $ref: '#/components/parameters/IdUsuario'
+    get:
+      summary: "Obtener un usuario por id (solo admin)"
+      tags:
+        - Usuarios
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: "Detalle del usuario"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usuario'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: "Eliminar un usuario (solo admin)"
+      tags:
+        - Usuarios
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          $ref: '#/components/responses/NoContent'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    Rol:
+      type: string
+      description: "Rol del usuario"
+      enum:
+        - admin
+        - usuario
+      example: "usuario"
+    Usuario:
+      type: object
+      description: "Informacion publica de un usuario (sin password_hash)"
+      required:
+        - id
+        - email
+        - nombre
+        - rol
+      properties:
+        id:
+          type: integer
+          example: 1
+        email:
+          type: string
+          format: email
+          example: "admin@admin.com"
+        nombre:
+          type: string
+          example: "Admin"
+        rol:
+          $ref: '#/components/schemas/Rol'
+    RegistroBody:
+      type: object
+      description: "Datos para registrar un usuario nuevo"
+      required:
+        - email
+        - nombre
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: "Email valido y unico"
+          example: "jperez@mail.com"
+        nombre:
+          type: string
+          description: "Nombre del usuario (1-100 caracteres)"
+          minLength: 1
+          maxLength: 100
+          example: "Juan Perez"
+        password:
+          type: string
+          format: password
+          description: "Password en texto plano (6-64 caracteres). Se guarda hasheado con bcrypt."
+          minLength: 6
+          maxLength: 64
+          example: "secret123"
+        rol:
+          $ref: '#/components/schemas/Rol'
+    LoginBody:
+      type: object
+      description: "Credenciales para iniciar sesion"
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "admin@admin.com"
+        password:
+          type: string
+          format: password
+          example: "admin123"
+    LoginResponse:
+      type: object
+      description: "Token JWT y datos del usuario autenticado"
+      properties:
+        token:
+          type: string
+          description: "JWT firmado con HS256. Enviar en el header Authorization: Bearer <token>"
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        usuario:
+          $ref: '#/components/schemas/Usuario'
+    Errores:
+      type: object
+      properties:
+        errors:
+          type: array
+          description: "Listado de errores"
+          items:
+            $ref: '#/components/schemas/Error'
+    Error:
+      type: object
+      description: "Estructura de datos que contiene los detalles del error"
+      properties:
+        code:
+          type: string
+          description: "Codigo de error alfanumerico unico legible por humanos"
+          example: "invalid.credentials"
+        message:
+          type: string
+          description: "Breve resumen del problema reportado"
+          example: "Credenciales invalidas"
+        level:
+          type: string
+          description: "Nivel del problema reportado"
+          example: "error"
+          enum:
+            - info
+            - warning
+            - error
+        description:
+          type: string
+          description: "Descripcion detallada del problema reportado"
+          example: "El email o password son incorrectos"
+  parameters:
+    IdUsuario:
+      name: id
+      in: path
+      schema:
+        type: integer
+        minimum: 1
+      description: "Id del usuario"
+      required: true
+      example: 1
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |-
+        JWT firmado con HS256 emitido por POST /login. Enviar en el header
+        `Authorization: Bearer <token>`. El payload contiene `sub` (id del usuario)
+        y `rol`.
+  responses:
+    NoContent:
+      description: "No Content"
+    BadRequest:
+      description: "Bad Request"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errores'
+    Unauthorized:
+      description: "Unauthorized (token faltante, invalido o expirado, o credenciales invalidas)"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errores'
+    Forbidden:
+      description: "Forbidden (usuario autenticado pero sin permisos suficientes)"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errores'
+    NotFound:
+      description: "Not Found"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errores'
+    Conflict:
+      description: "Conflict (por ejemplo, email ya registrado)"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errores'
+    InternalServerError:
+      description: "Internal Server Error"
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Errores'
