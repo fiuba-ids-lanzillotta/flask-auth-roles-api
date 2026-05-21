@@ -77,11 +77,13 @@ def validar_body_registro(body: dict) -> dict:
         errores.extend(e.args[0]['errors'])
 
     rol_raw = body.get('rol')
-    if rol_rawROL_USUARIO
-        rol = 'usuario'
+
+    if rol_raw is None:
+        rol = ROL_USUARIO
     else:
         try:
             rol = validar_string_no_vacio(rol_raw, 'rol').lower()
+            
             if rol not in ROLES_VALIDOS:
                 raise ValueError(construir_error_api(
                     code=ERROR_CODE_INVALID_ROL,
