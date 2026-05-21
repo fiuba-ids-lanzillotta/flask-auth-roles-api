@@ -360,16 +360,18 @@ Toda la auth es **stateless**: la API no guarda sesiones; cada request se valida
 - **Endpoint**: ruta concreta de la API (por ejemplo `POST /login`) que responde a un metodo HTTP y realiza una accion sobre un recurso.
 - **Request / Response**: par de mensajes HTTP. La **request** es lo que envia el cliente (metodo, headers, body); la **response** es lo que devuelve el servidor (status code, headers, body).
 - **Status code**: codigo numerico de la respuesta HTTP. Por ejemplo: `200 OK`, `201 Created`, `204 No Content`, `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, `404 Not Found`, `409 Conflict`.
-- **Header `Authorization`**: encabezado HTTP donde se envia el token de autenticacion, con el formato `Bearer <token>`.
+- **Bearer token**: esquema de autenticacion HTTP donde el JWT viaja en el header `Authorization: Bearer <token>`.
 - **Body**: contenido (payload) de una request o response. En esta API es JSON.
 - **JSON**: formato de texto para representar datos estructurados (objetos y arrays). Es el formato usado para los bodies de request y response.
-- **Flask**: micro framework web de Python usado para implementar la API.
+- **Flask**: micro framework web de Python. En este ejemplo se usa tanto en el frontend (renderizado server-side) como en la API backend.
+- **Frontend**: aplicacion que renderiza las paginas HTML del lado del servidor y consume la API. En este ejemplo integrador corre en el puerto 5001 (`flask-auth-roles-example-web`).
+- **Backend / API**: servicio HTTP REST (este proyecto) que expone los endpoints de autenticacion y usuarios. Corre en el puerto 5000.
 - **Blueprint (Flask)**: mecanismo de Flask para agrupar rutas relacionadas en modulos (por ejemplo `routes/auth.py`, `routes/usuarios.py`).
 - **Decorador (`@requiere_auth`)**: funcion de Python que envuelve a otra para agregarle comportamiento. Aca se usa para exigir un token valido (y opcionalmente un rol) antes de ejecutar la vista.
 - **Autenticacion**: proceso de verificar **quien** es el usuario (login con email y password).
 - **Autorizacion**: proceso de verificar **que** puede hacer el usuario autenticado (por ejemplo, si su rol es `admin`).
 - **Rol**: etiqueta asociada al usuario que define sus permisos. En este proyecto: `admin` y `usuario`.
-- **JWT (JSON Web Token)**: token firmado que contiene informacion del usuario (`sub`, `rol`, `exp`). El servidor lo emite en el login y el cliente lo envia en cada request protegida.
+- **JWT (JSON Web Token)**: token firmado que contiene informacion del usuario (`sub`, `rol`, `exp`). La API lo emite en el login y el cliente lo envia en cada request protegida.
 - **Claim**: cada uno de los campos dentro del payload de un JWT (`sub` = subject/id del usuario, `exp` = expiracion, etc.).
 - **Stateless**: la API **no** guarda sesiones en memoria ni en base; cada request se autentica de cero validando el JWT.
 - **`JWT_SECRET`**: clave secreta con la que se firman y verifican los tokens. Si se filtra, cualquiera puede emitir tokens validos.
