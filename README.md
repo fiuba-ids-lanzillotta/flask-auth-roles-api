@@ -387,7 +387,10 @@ Toda la auth es **stateless**: la API no guarda sesiones; cada request se valida
 - **Contenedor**: instancia en ejecucion de una imagen Docker (por ejemplo el contenedor de MySQL).
 - **Volumen (Docker)**: almacenamiento persistente del contenedor; permite hacer `down` sin perder los datos.
 - **`.env` / variables de entorno**: archivo con configuracion sensible (credenciales, secretos) que **no** se commitea al repo. `.env.example` es la plantilla.
-- **Entorno virtual (`venv` / `pipenv`)**: directorio aislado con la version de Python y las dependencias del proyecto, para no mezclarlas con las del sistema.
+- **Entorno virtual**: directorio aislado con la version de Python y las dependencias del proyecto, para no mezclarlas con las del sistema.
+- **virtualenv / `venv`**: herramienta estandar de Python para crear entornos virtuales. Las dependencias se declaran en `requirements.txt` y se instalan con `pip install -r requirements.txt`. En este proyecto lo levantan los scripts `setup_virtualenv.sh` / `setup_virtualenv.bat`.
+- **pipenv**: herramienta alternativa que combina la gestion del entorno virtual con la de dependencias en un solo flujo. Usa `Pipfile` (declaracion) y `Pipfile.lock` (versiones exactas resueltas) en vez de `requirements.txt`. En este proyecto lo levantan los scripts `setup_pipenv.sh` / `setup_pipenv.bat`.
+- **`pip`**: gestor de paquetes de Python. Instala librerias desde PyPI dentro del entorno activo.
 - **CORS (Cross-Origin Resource Sharing)**: mecanismo del navegador que controla que dominios pueden consumir la API. Relevante cuando el frontend corre en otro origen.
 - **Validator**: funcion que verifica que el body de la request cumple las reglas (campos requeridos, formato, longitudes). Viven en `validators/`.
 - **Service**: capa con la **logica de negocio** (registro, login, listar usuarios). Vive en `services/` y es invocada desde las routes.
